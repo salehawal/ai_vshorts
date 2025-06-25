@@ -1,0 +1,66 @@
+# prompt
+Local AI-Powered Video Processing System Using Bash and Native Linux Tools
+
+| objective:
+Design a fully local video processing pipeline that automates transcription, content segmentation, face-based cropping, and clip export for social media. The system should be efficient, modular, privacy-respecting, and work entirely offline. Bash is the main language. Python is only used through pipx when no native Linux tool is available.
+
+| system setup:
+The system requires a one-time install script to set up:
+- Core packages via apt: ffmpeg, sox, jq, curl, git, build-essential, python3, pipx
+- Python tools via pipx: whisper (for transcription), face_recognition (for face detection)
+- Ollama for running a local LLM model (Mistral) used in transcript cleanup and segmentation
+
+| project structure:
+- All output files are saved in a dedicated "output/" folder
+- A main controller script "process.sh" manages the entire flow
+- Each processing step is separated into modular scripts:
+  • st01-ex_au.sh – Extract audio from video
+  • st02-ex_trans.sh – Transcribe audio using Whisper
+  • st03-clean.sh – Clean transcript using Ollama + Mistral
+  • st04-posts.sh – Segment meaningful scenes and generate hashtags
+  • st05-clips.sh – Export cropped and resized video clips
+
+| input:
+- A long video file (e.g., .mp4) is the only required input
+
+| output:
+- Cleaned transcript (text and subtitle)
+- JSON scenes object with start, end, and title for each clip
+- Cropped vertical video clips, saved as v01.mp4, v02.mp4, etc.
+- A social.txt file containing titles and AI-generated hashtags for each clip
+
+| features:
+
+1. Transcription:
+- Audio is extracted from the video using ffmpeg
+- Whisper transcribes it into raw text (.txt) and timestamped subtitle (.srt)
+
+2. Transcript cleanup:
+- A local LLM (via Ollama) improves the transcript by fixing errors without summarizing
+- The cleaned version is saved and used for segmentation
+
+3. Scene segmentation:
+- The subtitle file is analyzed using AI to detect meaningful scenes
+- Irrelevant or filler content is ignored (e.g., introductions or pauses)
+- Scenes are stored in a JSON array with: start, end, and a short title
+- Each scene is limited to 60–120 seconds, max 3 per video
+
+4. Visual formatting:
+- The center face is detected at the midpoint of each scene using face_recognition
+- The crop is adjusted to center the subject in a 9:16 vertical layout
+- ffmpeg resizes and exports the clips to 576x1024 format
+
+5. Hashtag generation:
+- For each scene, a short post title is combined with the original video name
+- Ollama generates 7 one-word hashtags per post, matching the language
+- Hashtags are saved alongside the titles in social.txt
+
+| constraints:
+- Only use Bash for scripting logic
+- Prefer Linux-native tools like ffmpeg, sox, jq, awk, grep, bc
+- Use pipx to run Python-based tools (do not import Python modules directly)
+- Use lowercase and separator-friendly names for files and variables
+- Avoid hardcoded numbers in filenames (except clip numbers like v01, v02)
+
+| final result:
+An automated, local-first video processing solution optimized for creating short, informative social media clips from longer videos. No internet or cloud services are required. It runs efficiently on any Linux system using modular Bash scripts and a lightweight AI backend.

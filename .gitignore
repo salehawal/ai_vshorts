@@ -1,0 +1,6 @@
+output/
+*.wav
+*-scenes.json
+*.srt
+*.txt
+*.clean.txt
