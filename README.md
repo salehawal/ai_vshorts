@@ -123,4 +123,11 @@ Just provide a long video file (e.g., `.mp4`) to the system.
 An offline-first, automated video processing system for creating **short, content-rich social clips** from longer videos. Perfect for educational, podcast, or speaking content.
 
 **No internet required. No cloud services used. 100% local.**
+
+
+---
+
+## License
+this project is under OPL License [https://github.com/salehawal/OPL]
+
 ```
